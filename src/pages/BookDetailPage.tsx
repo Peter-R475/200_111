@@ -5,7 +5,7 @@ import { useBookDetail } from "../hooks/useBooks.ts";
 
 function BookDetailPage() {
   const { id = "" } = useParams(); // route books/:id มี id เสมอ ใส่ค่าเริ่มต้นไว้ให้ type เป็น string
-  const {data: book, isPending, isError, error, refetch, isFetching} = useBookDetail(id);
+  const { data: book, isPending, error, refetch, isFetching } = useBookDetail(id);
   //TODO: Get Book Detail from useBookDetail by book id
 
   if (isPending)
@@ -22,7 +22,7 @@ function BookDetailPage() {
           </div>
         </div>
       </div>
-    );  
+    );
 
   // TODO: Error UI
   if (error)
