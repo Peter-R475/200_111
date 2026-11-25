@@ -1,11 +1,11 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface Author {
+export interface Author {
     name: string;
 }
 
-interface Book {
+export interface Book {
     id: number;
     title: string;
     authors: Author[];
