@@ -20,13 +20,13 @@ interface GutendexResponse {
     results: Book[];
 }
 
-export const useBooks = () => {
+export const useBooks = (page: number = 1) => {
     return useQuery<GutendexResponse>({
 
-        queryKey: ["books"],
+        queryKey: ["books", page],
 
         queryFn: async () => {
-            const res = await fetch("https://gutendex.com/books/");
+            const res = await fetch(`https://gutendex.com/books/?page=${page}`);
             if (!res.ok) throw new Error("ERROR");
             return res.json();
         },
@@ -45,16 +45,16 @@ export const useBookDetail = (id: string | undefined) => {
             } catch (err) {
                 console.warn("API error, reading from cache...", err);
             }
-            const booksData = queryClient.getQueryData<GutendexResponse>(["books"]);
-            const cached = booksData?.results.find(
+            const allBooks = queryClient.getQueriesData<GutendexResponse>({ queryKey: ["books"] }).flatMap(([, d]) => d?.results ?? []);
+            const cached = allBooks.find(
                 (b) => String(b.id) === String(id),
             );
             if (cached) return cached;
             throw new Error("ไม่สามารถดึงข้อมูลเล่มนี ้ได้");
         },
         initialData: () => {
-            const booksData = queryClient.getQueryData<GutendexResponse>(["books"]);
-            return booksData?.results.find((b) => String(b.id) === String(id));
+            const allBooks = queryClient.getQueriesData<GutendexResponse>({ queryKey: ["books"] }).flatMap(([, d]) => d?.results ?? []);
+            return allBooks.find((b) => String(b.id) === String(id));
         },
         enabled: !!id,
         staleTime: 1000 * 60 * 10,
